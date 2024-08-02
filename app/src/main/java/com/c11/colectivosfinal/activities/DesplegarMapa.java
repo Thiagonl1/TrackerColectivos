@@ -1,20 +1,13 @@
 package com.c11.colectivosfinal.activities;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -29,12 +22,14 @@ import com.c11.colectivosfinal.R;
 import com.c11.colectivosfinal.logica.Colectivos;
 import com.c11.colectivosfinal.logica.OsmApi;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,10 +46,8 @@ public class DesplegarMapa extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_desplegar_mapa);
 
-
         // Inicializar con la app id para evitar baneo de osm
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-
 
         // Encontrar el mapView en el layout
         map = findViewById(R.id.mapView);
@@ -74,10 +67,11 @@ public class DesplegarMapa extends AppCompatActivity {
     }
 
     public void boton(View v){
-        buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idPersona=1");
+        buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idColectivo=1");
         colectivos.putMarkerInMap(marker1);
         colectivos.updateMarker(marker1);
     }
+
 
     private void ejecutarServicio(String URL, OsmApi osmApi) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
@@ -94,13 +88,12 @@ public class DesplegarMapa extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> parametros = new HashMap<>();
-                parametros.put("idPersona", String.valueOf(colectivos.getIdColectivo())); // Adjusted method call
-                parametros.put("latitud", String.valueOf(colectivos.getLatitud())); // Adjusted method call
-                parametros.put("longitud", String.valueOf(colectivos.getLongitud())); // Adjusted method call
+                parametros.put("idColectivo", String.valueOf(colectivos.getIdColectivo()));
+                parametros.put("latitud", String.valueOf(colectivos.getLatitud()));
+                parametros.put("longitud", String.valueOf(colectivos.getLongitud()));
                 return parametros;
             }
         };
-
         // Añadir la solicitud a la cola de Volley
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
@@ -116,7 +109,7 @@ public class DesplegarMapa extends AppCompatActivity {
                         boolean found = false;
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject jsonObject = response.getJSONObject(i);
-                            int personaId = jsonObject.getInt("idPersona");
+                            int personaId = jsonObject.getInt("idColectivo");
                             if (personaId == 1) {
                                 double latitud = jsonObject.getDouble("latitud");
                                 double longitud = jsonObject.getDouble("longitud");
@@ -129,7 +122,7 @@ public class DesplegarMapa extends AppCompatActivity {
                             }
                         }
                         if (!found) {
-                            Toast.makeText(getApplicationContext(), "Persona con id 1 no encontrada", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Colectivo no encontrado", Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         Toast.makeText(getApplicationContext(), "Error procesando datos", Toast.LENGTH_SHORT).show();
@@ -141,7 +134,7 @@ public class DesplegarMapa extends AppCompatActivity {
                 },
                 error -> {
                     Toast.makeText(getApplicationContext(), "Error de conexión BD", Toast.LENGTH_SHORT).show();
-                    error.printStackTrace(); // Agrega detalles del error para depuración
+                    error.printStackTrace();
                 }
         );
 
@@ -164,6 +157,5 @@ public class DesplegarMapa extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Clean up any resources if needed
     }
 }

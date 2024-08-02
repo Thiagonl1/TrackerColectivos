@@ -15,9 +15,12 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.util.List;
+
 
 public class Colectivos{
-    private Marker marker;
+
+    private String nombre;
     public int idColectivo;
     public boolean enFuncion;
     public double latitud, longitud;
@@ -99,6 +102,13 @@ public class Colectivos{
 
         map.invalidate();
     }
+
+    /*public List<Colectivos> colectivos traerColectivos(){
+        traer todos los colectivos necesarios de una linea en especifico.
+        php
+
+        return colectivos;
+    }*/
 
 
 }
