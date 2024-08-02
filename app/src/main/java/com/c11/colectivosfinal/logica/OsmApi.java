@@ -2,6 +2,8 @@ package com.c11.colectivosfinal.logica;
 import static android.content.Context.LOCATION_SERVICE;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.widget.Toast;

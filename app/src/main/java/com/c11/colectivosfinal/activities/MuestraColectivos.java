@@ -10,6 +10,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.c11.colectivosfinal.R;
 import com.c11.colectivosfinal.databinding.ActivityMuestraColectivosBinding;
+import com.c11.colectivosfinal.fragments.HomeFragment;
+import com.c11.colectivosfinal.fragments.SettingsFragment;
+import com.c11.colectivosfinal.fragments.UbicacionFragment;
 
 public class MuestraColectivos extends AppCompatActivity {
 
