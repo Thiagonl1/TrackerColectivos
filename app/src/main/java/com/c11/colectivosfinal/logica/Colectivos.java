@@ -1,6 +1,12 @@
 package com.c11.colectivosfinal.logica;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
+import com.c11.colectivosfinal.R;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -71,6 +77,16 @@ public class Colectivos{
         Marker marker = new Marker(map, context);
         GeoPoint geoPoint = new GeoPoint(latitud, longitud);
         marker.setPosition(geoPoint);
+
+        // creo el icono
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bondi);
+        // lo redimensiono
+        Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 100,100, false);
+
+        Drawable drawable = new BitmapDrawable(context.getResources(), bitmapRedimensionado);
+        marker.setIcon(drawable);
+
+
         marker.setTitle("Persona a");
         marker.setSnippet("Mda - Sc");
         return marker;

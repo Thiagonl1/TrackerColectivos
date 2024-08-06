@@ -2,11 +2,17 @@ package com.c11.colectivosfinal.logica;
 import static android.content.Context.LOCATION_SERVICE;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.widget.Toast;
+
+import com.c11.colectivosfinal.R;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -41,8 +47,19 @@ public class OsmApi {
             mapController.setCenter(startPoint);
 
             MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
-            myLocationOverlay.enableMyLocation();
+
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_location);
+            Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 60,80, false);
+
+
+            myLocationOverlay.setPersonIcon(bitmapRedimensionado);
+            myLocationOverlay.setDirectionIcon(bitmapRedimensionado);
+
+            mapView.getOverlays().clear();
+
             mapView.getOverlays().add(myLocationOverlay);
+
+            mapView.invalidate();
         }else{
             Toast.makeText(context, "No se pudo encontrar la ubicacion", Toast.LENGTH_SHORT).show();
         }

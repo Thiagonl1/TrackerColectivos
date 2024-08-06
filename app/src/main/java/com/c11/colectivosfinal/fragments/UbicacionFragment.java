@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,11 @@ import org.osmdroid.views.overlay.Marker;
  * create an instance of this fragment.
  */
 public class UbicacionFragment extends Fragment {
+
+    private static final long INTERVALO_ACTUALIZACION = 5000; // 5 sec
+
+    private Handler handler;
+    private Runnable runnable;
 
     /* Necesario por osm */
     private MapView map;
@@ -96,6 +102,17 @@ public class UbicacionFragment extends Fragment {
         marker1 = colectivos.setUpMarker();
         // Configuración de la base de datos remota
         osmApi.setUpMap(getContext());
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run(){
+                buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idColectivo=1");
+                colectivos.putMarkerInMap(marker1);
+                colectivos.updateMarker(marker1);
+                handler.postDelayed(this, INTERVALO_ACTUALIZACION);
+            }
+        };
+
         return view;
     }
 
@@ -146,12 +163,14 @@ public class UbicacionFragment extends Fragment {
     public void onResume() {
         super.onResume();
         map.onResume();
+        handler.post(runnable);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         map.onPause();
+        handler.removeCallbacks(runnable);
     }
 
     @Override
