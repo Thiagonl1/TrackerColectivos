@@ -1,5 +1,9 @@
 package com.c11.colectivosfinal.fragments;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -21,11 +25,23 @@ import com.c11.colectivosfinal.activities.MuestraColectivos;
 import com.c11.colectivosfinal.logica.Colectivos;
 import com.c11.colectivosfinal.logica.OsmApi;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.Polygon;
+import org.osmdroid.views.overlay.Polyline;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +52,20 @@ public class UbicacionFragment extends Fragment {
 
     private static final long INTERVALO_ACTUALIZACION = 5000; // 5 sec
 
+
+    /* Necesario para llamar a la instancia desde otro fragmento
+     * al hacer esto tengo la certeza de que no creo una instancia nueva cada vez que llamo a ubicacion desde otro fragmento */
+
+    private static UbicacionFragment instance;
+
+    public static UbicacionFragment getInstance(){
+        if(instance == null){
+            instance = new UbicacionFragment();
+        }
+        return instance;
+    }
+
+    /* Necesario para las llamadas a ubicacion */
     private Handler handler;
     private Runnable runnable;
 
@@ -102,10 +132,12 @@ public class UbicacionFragment extends Fragment {
         marker1 = colectivos.setUpMarker();
         // Configuración de la base de datos remota
         osmApi.setUpMap(getContext());
+        insertarRecorrido(map, "sancleterminalpuerto");
         handler = new Handler();
         runnable = new Runnable() {
             @Override
             public void run(){
+
                 buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idColectivo=1");
                 colectivos.putMarkerInMap(marker1);
                 colectivos.updateMarker(marker1);
@@ -158,6 +190,104 @@ public class UbicacionFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
     }
+
+    private void insertarRecorrido(MapView mapView, String recorrido){
+        InputStream inputStream = null;
+        try{
+
+            int resourceId = getResources().getIdentifier(recorrido, "raw", getActivity().getPackageName());
+
+            if(resourceId == 0 ){
+                throw new Resources.NotFoundException("No se encontraron recorridos para "+recorrido);
+            }
+            inputStream = getResources().openRawResource(resourceId);
+
+            String json = new Scanner(inputStream).useDelimiter("\\A").next();
+            JSONObject geoJson = new JSONObject(json);
+            parseGeoJson(geoJson);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(inputStream != null){
+                try{
+                    inputStream.close();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void parseGeoJson(JSONObject geoJson) throws Exception{
+        String type = geoJson.getString("type");
+        if("FeatureCollection".equals(type)){
+            JSONArray features = geoJson.getJSONArray("features");
+            for (int i = 0; i < features.length(); i++) {
+                parseFeature(features.getJSONObject(i));
+            }
+        }
+    }
+
+    private void parseFeature(JSONObject feature) throws Exception {
+        JSONObject geometry = feature.getJSONObject("geometry");
+        String type = geometry.getString("type");
+
+        switch (type) {
+            case "Point":
+                addPoint(geometry.getJSONArray("coordinates"));
+                break;
+            case "LineString":
+                addLineString(geometry.getJSONArray("coordinates"));
+                break;
+            case "Polygon":
+                addPolygon(geometry.getJSONArray("coordinates"));
+                break;
+        }
+    }
+
+    private void addPoint(JSONArray coordinates) throws Exception {
+        double lon = coordinates.getDouble(0);
+        double lat = coordinates.getDouble(1);
+        GeoPoint point = new GeoPoint(lat, lon);
+
+        List<OverlayItem> items = new ArrayList<>();
+        OverlayItem overlayItem = new OverlayItem("Parada", "", point);
+        overlayItem.setMarker(getResources().getDrawable(R.drawable.parada_azul, null));
+        items.add(overlayItem);
+
+        ItemizedOverlayWithFocus<OverlayItem> overlay = new ItemizedOverlayWithFocus<>(getContext(), items, null);
+        overlay.setFocusItemsOnTap(true);
+
+        map.getOverlays().add(overlay);
+    }
+
+    private void addLineString(JSONArray coordinates) throws Exception {
+        List<GeoPoint> points = new ArrayList<>();
+        for (int i = 0; i < coordinates.length(); i++) {
+            JSONArray coord = coordinates.getJSONArray(i);
+            points.add(new GeoPoint(coord.getDouble(1), coord.getDouble(0)));
+        }
+        Polyline line = new Polyline();
+        line.setPoints(points);
+        map.getOverlays().add(line);
+    }
+
+    private void addPolygon(JSONArray coordinates) throws Exception {
+        List<GeoPoint> points = new ArrayList<>();
+        JSONArray ring = coordinates.getJSONArray(0);
+        for (int i = 0; i < ring.length(); i++) {
+            JSONArray coord = ring.getJSONArray(i);
+            points.add(new GeoPoint(coord.getDouble(1), coord.getDouble(0)));
+        }
+        Polygon polygon = new Polygon();
+
+        polygon.setPoints(points);
+
+        map.getOverlays().add(polygon);
+
+    }
+
 
     @Override
     public void onResume() {

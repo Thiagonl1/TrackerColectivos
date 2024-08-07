@@ -48,4 +48,6 @@ dependencies {
     implementation ("org.osmdroid:osmdroid-android:6.1.14")
     implementation ("net.sourceforge.jtds:jtds:1.3.1")
     implementation ("com.android.volley:volley:1.2.1")
+    implementation ("com.google.code.gson:gson:2.8.9")
+    implementation ("org.json:json:20210307")
 }
