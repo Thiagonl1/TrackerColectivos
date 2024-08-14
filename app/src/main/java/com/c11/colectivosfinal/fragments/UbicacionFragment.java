@@ -1,9 +1,7 @@
 package com.c11.colectivosfinal.fragments;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -21,7 +19,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.c11.colectivosfinal.BuildConfig;
 import com.c11.colectivosfinal.R;
-import com.c11.colectivosfinal.activities.MuestraColectivos;
 import com.c11.colectivosfinal.logica.Colectivos;
 import com.c11.colectivosfinal.logica.OsmApi;
 
@@ -76,14 +73,15 @@ public class UbicacionFragment extends Fragment {
     private Marker marker1;
 
 
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "recorrido";
+    private static final String ARG_PARAM2 = "idColectivo";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String recorrido;
+    private String idColectivo;
 
     public UbicacionFragment() {
         // Required empty public constructor
@@ -93,16 +91,16 @@ public class UbicacionFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param recorrido Parameter 1.
+     * @param idColectivo Parameter 2.
      * @return A new instance of fragment UbicacionFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UbicacionFragment newInstance(String param1, String param2) {
+    public static UbicacionFragment newInstance(String recorrido, String idColectivo) {
         UbicacionFragment fragment = new UbicacionFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, recorrido);
+        args.putString(ARG_PARAM2, idColectivo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -111,14 +109,14 @@ public class UbicacionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            recorrido = getArguments().getString(ARG_PARAM1);
+            idColectivo = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+
         // Inicializar con la app id para evitar baneo de osm
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
         // Inflar el layout para este fragmento
@@ -132,13 +130,13 @@ public class UbicacionFragment extends Fragment {
         marker1 = colectivos.setUpMarker();
         // Configuración de la base de datos remota
         osmApi.setUpMap(getContext());
-        insertarRecorrido(map, "sancleterminalpuerto");
+        insertarRecorrido(map, "sucucho");
         handler = new Handler();
         runnable = new Runnable() {
             @Override
             public void run(){
 
-                buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idColectivo=1");
+                buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idColectivo= "+idColectivo);
                 colectivos.putMarkerInMap(marker1);
                 colectivos.updateMarker(marker1);
                 handler.postDelayed(this, INTERVALO_ACTUALIZACION);
@@ -159,7 +157,7 @@ public class UbicacionFragment extends Fragment {
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject jsonObject = response.getJSONObject(i);
                             int personaId = jsonObject.getInt("idColectivo");
-                            if (personaId == 1) {
+                            if (personaId == Integer.parseInt(idColectivo)) {
                                 double latitud = jsonObject.getDouble("latitud");
                                 double longitud = jsonObject.getDouble("longitud");
 
@@ -242,6 +240,7 @@ public class UbicacionFragment extends Fragment {
                 break;
             case "Polygon":
                 addPolygon(geometry.getJSONArray("coordinates"));
+
                 break;
         }
     }
@@ -250,12 +249,10 @@ public class UbicacionFragment extends Fragment {
         double lon = coordinates.getDouble(0);
         double lat = coordinates.getDouble(1);
         GeoPoint point = new GeoPoint(lat, lon);
-
         List<OverlayItem> items = new ArrayList<>();
-        OverlayItem overlayItem = new OverlayItem("Parada", "", point);
+        OverlayItem overlayItem = new OverlayItem("Parada", "Tuki", point);
         overlayItem.setMarker(getResources().getDrawable(R.drawable.parada_azul, null));
         items.add(overlayItem);
-
         ItemizedOverlayWithFocus<OverlayItem> overlay = new ItemizedOverlayWithFocus<>(getContext(), items, null);
         overlay.setFocusItemsOnTap(true);
 
@@ -281,13 +278,12 @@ public class UbicacionFragment extends Fragment {
             points.add(new GeoPoint(coord.getDouble(1), coord.getDouble(0)));
         }
         Polygon polygon = new Polygon();
+        //polygon.setStrokeColor(Color.RED);
 
         polygon.setPoints(points);
 
         map.getOverlays().add(polygon);
-
     }
-
 
     @Override
     public void onResume() {
@@ -307,5 +303,4 @@ public class UbicacionFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
     }
-
 }

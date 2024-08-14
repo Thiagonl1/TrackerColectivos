@@ -2,12 +2,21 @@ package com.c11.colectivosfinal.logica;
 
 public class LineaColectivos {
     int idLinea, idColectivo, idLineaColectivo;
+    String recorrido;
 
-    public LineaColectivos (int idLinea, int idColectivo){
+    public LineaColectivos (int idLinea, int idColectivo, String recorrido){
         this.idLinea = idLinea;
         this.idColectivo = idColectivo;
+        this.recorrido = recorrido;
     }
 
+    public String getRecorrido() {
+        return recorrido;
+    }
+
+    public void setRecorrido(String recorrido) {
+        this.recorrido = recorrido;
+    }
 
     public int getIdLinea() {
         return idLinea;

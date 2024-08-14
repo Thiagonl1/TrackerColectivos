@@ -1,6 +1,8 @@
 package com.c11.colectivosfinal.fragments;
 
 
+import static androidx.core.app.ActivityCompat.invalidateOptionsMenu;
+
 import android.os.Bundle;
 
 
@@ -21,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.c11.colectivosfinal.R;
+import com.c11.colectivosfinal.activities.MuestraMenu;
 import com.c11.colectivosfinal.logica.LineaColectivos;
 
 import org.json.JSONException;
@@ -31,8 +34,14 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
+    private static HomeFragment instance;
 
-    // TODO: Rename and change types of parameters
+    public static HomeFragment getInstance(){
+        if(instance == null){
+            instance = new HomeFragment();
+        }
+        return instance;
+    }
 
     public HomeFragment() {
         // Required empty public constructor
@@ -41,18 +50,23 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() != null) {
+            getActivity().invalidateOptionsMenu();
+        }
+
         List<LineaColectivos> lineaColectivos = new ArrayList<>();
         Button button_colectivo1 = view.findViewById(R.id.btn_colectivoInter);
         Button button_colectivo2 = view.findViewById(R.id.btn_colectivoUrb);
@@ -62,14 +76,20 @@ public class HomeFragment extends Fragment {
             queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=1", lineaColectivos);
         });
         button_colectivo2.setOnClickListener(v -> {
-            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2",
-                            lineaColectivos);
+            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2", lineaColectivos);
             onAttach(getContext());
-                }
+        }
         );
 
     }
 
+    public Bundle creaBundle (String idColectivo, String recorrido){
+        Bundle datos = new Bundle();
+        datos.putString("idColectivo", idColectivo);
+        datos.putString("recorrido", recorrido);
+
+        return datos;
+    }
 
     public void queryLineaColectivo(String URL, List<LineaColectivos> lineaColectivos) {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -84,21 +104,23 @@ public class HomeFragment extends Fragment {
 
                             int idLinea = jsonObject.getInt("idLinea");
                             int idColectivo = jsonObject.getInt("idColectivo");
+                            String recorrido = jsonObject.getString("recorrido");
 
-                            lineaColectivos.add(new LineaColectivos(idLinea, idColectivo));
+                            lineaColectivos.add(new LineaColectivos(idLinea, idColectivo, recorrido));
                         }
 
                         if (!lineaColectivos.isEmpty()) {
                             Toast.makeText(getContext(),
-                                    "ID Colectivo: " + lineaColectivos.get(0).getIdColectivo(),
+                                    "ID Colectivo: " + lineaColectivos.get(0).getRecorrido(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getContext(),
                                     "No se encontraron colectivos.",
                                     Toast.LENGTH_SHORT).show();
                         }
+                        Bundle bundle = creaBundle("1",  lineaColectivos.get(0).getRecorrido());
+                        switchFragment(bundle);
 
-                        switchFragment();
                     } catch (JSONException e) {
                         // Captura de errores JSON
                         Toast.makeText(getContext(),
@@ -126,13 +148,15 @@ public class HomeFragment extends Fragment {
         requestQueue.add(jsonArrayRequest);
     }
 
-    public void switchFragment(){
+    public void switchFragment(Bundle bundle){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         Fragment fragmentCambio = UbicacionFragment.getInstance();
 
         fragmentTransaction.replace(R.id.frame_layout, fragmentCambio);
+        fragmentTransaction.addToBackStack(null);
+        fragmentCambio.setArguments(bundle);
         fragmentTransaction.commit();
     }
 

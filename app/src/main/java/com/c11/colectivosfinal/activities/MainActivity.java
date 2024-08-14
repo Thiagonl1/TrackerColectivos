@@ -2,7 +2,6 @@ package com.c11.colectivosfinal.activities;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -10,13 +9,10 @@ import com.c11.colectivosfinal.R;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 
 
 import android.Manifest;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, PERMISSION_REQUEST_CODE);
         }
-        btn_actualizar.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MuestraColectivos.class)));
+        btn_actualizar.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MuestraMenu.class)));
     }
 
     @Override

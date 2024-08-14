@@ -66,13 +66,6 @@ public class DesplegarMapa extends AppCompatActivity {
         osmApi.setUpMap(this);
     }
 
-    public void boton(View v){
-        buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idColectivo=1");
-        colectivos.putMarkerInMap(marker1);
-        colectivos.updateMarker(marker1);
-    }
-
-
     private void ejecutarServicio(String URL, OsmApi osmApi) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
             @Override

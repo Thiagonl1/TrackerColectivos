@@ -44,8 +44,6 @@ public class SelectorActivity extends AppCompatActivity {
     }
 
 
-
-
     /* La idea de este void es agarrar los colectivos de N linea mediante la tabla Linea-Colectivo */
     public void queryLineaColectivo(String URL, List<LineaColectivos> lineaColectivos) {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -60,8 +58,9 @@ public class SelectorActivity extends AppCompatActivity {
 
                             int idLinea = jsonObject.getInt("idLinea");
                             int idColectivo = jsonObject.getInt("idColectivo");
+                            String recorrido = jsonObject.getString("recorrido");
 
-                            lineaColectivos.add(new LineaColectivos(idLinea, idColectivo));
+                            lineaColectivos.add(new LineaColectivos(idLinea, idColectivo, recorrido));
                         }
 
                         // Mostrar Toast después de que la lista haya sido actualizada

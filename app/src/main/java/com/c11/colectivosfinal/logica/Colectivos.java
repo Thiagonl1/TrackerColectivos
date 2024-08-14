@@ -86,7 +86,6 @@ public class Colectivos{
         Drawable drawable = new BitmapDrawable(context.getResources(), bitmapRedimensionado);
         marker.setIcon(drawable);
 
-
         marker.setTitle("Persona a");
         marker.setSnippet("Mda - Sc");
         return marker;
