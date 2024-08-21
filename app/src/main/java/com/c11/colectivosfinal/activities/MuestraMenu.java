@@ -1,11 +1,12 @@
 package com.c11.colectivosfinal.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import androidx.activity.EdgeToEdge;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,6 +22,7 @@ public class MuestraMenu extends AppCompatActivity {
 
     private ActivityMuestraMenuBinding binding;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,41 +64,34 @@ public class MuestraMenu extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_prot, menu);  // Inflate the main menu
+        inflater.inflate(R.menu.menu_prot, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Get the current fragment
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
 
         if (currentFragment instanceof HomeFragment) {
-            // Modify menu for HomeFragment
             menu.findItem(R.id.item_home).setVisible(true);
         } else if (currentFragment instanceof SettingsFragment) {
-            // Modify menu for SettingsFragment
             menu.findItem(R.id.item_ajustes).setVisible(true);
         } else if (currentFragment instanceof UbicacionFragment) {
-            // Modify menu for UbicacionFragment
             menu.findItem(R.id.item_ubicacion).setVisible(true);
         }
 
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle menu item clicks
         switch (item.getItemId()) {
             case R.id.item_home:
-                // Handle specific action
                 return true;
             case R.id.item_ajustes:
-                // Handle specific action
                 return true;
             case R.id.item_ubicacion:
-                // Handle specific action
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

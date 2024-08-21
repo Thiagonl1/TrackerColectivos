@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.c11.colectivosfinal.R;
@@ -71,20 +72,22 @@ public class Colectivos{
     public Marker setUpMarker(String idLinea){
         Marker marker = new Marker(map, context);
         GeoPoint geoPoint = new GeoPoint(latitud, longitud);
-        Bitmap bitmap = null;
         marker.setPosition(geoPoint);
+        Bitmap bitmap = null;
 
-        if(idLinea.equals("1")){
-            // creo el icono del azul
+
+        if (idLinea == null) {
+            Log.e("Colectivos", "idLinea is null");
+        } else if (idLinea.equals("1")) {
+            // Set the blue icon
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_azul);
-        }else if(idLinea.equals("2")) {
-            // creo el icono del amarillo
+        } else if (idLinea.equals("2")) {
+            // Set the yellow icon
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_amarillo);
         }
 
         // lo redimensiono
         Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 100,100, false);
-
         Drawable drawable = new BitmapDrawable(context.getResources(), bitmapRedimensionado);
         marker.setIcon(drawable);
         return marker;

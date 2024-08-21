@@ -155,24 +155,13 @@ public class HomeFragment extends Fragment {
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+        String recorrido = bundle.getString("recorrido");
+        String idColectivo = bundle.getString("idColectivo");
+        String idLinea = bundle.getString("idLinea");
 
-
-        if (fragmentCambio == null) {
-            String recorrido = bundle.getString("recorrido");
-            String idColectivo = bundle.getString("idColectivo");
-            String idLinea = bundle.getString("idLinea");
-
-            fragmentCambio = (UbicacionFragment) UbicacionFragment.newInstance(recorrido, idColectivo, idLinea);
-            fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
-            fragmentTransaction.addToBackStack(null);
-        } else {
-            // Update the existing fragment with the new data
-            fragmentCambio.updateFragment(
-                    bundle.getString("recorrido"),
-                    bundle.getString("idColectivo"),
-                    bundle.getString("idLinea")
-            );
-        }
+        fragmentCambio = (UbicacionFragment) UbicacionFragment.newInstance(recorrido, idColectivo, idLinea);
+        fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
         fragmentTransaction.addToBackStack(null);
 
