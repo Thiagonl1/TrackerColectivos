@@ -1,7 +1,13 @@
 package com.c11.colectivosfinal.fragments;
 
+
 import android.content.res.Resources;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -53,15 +59,6 @@ public class UbicacionFragment extends Fragment {
     /* Necesario para llamar a la instancia desde otro fragmento
      * al hacer esto tengo la certeza de que no creo una instancia nueva cada vez que llamo a ubicacion desde otro fragmento */
 
-    private static UbicacionFragment instance;
-
-    public static UbicacionFragment getInstance(){
-        if(instance == null){
-            instance = new UbicacionFragment();
-        }
-        return instance;
-    }
-
     /* Necesario para las llamadas a ubicacion */
     private Handler handler;
     private Runnable runnable;
@@ -78,10 +75,12 @@ public class UbicacionFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "recorrido";
     private static final String ARG_PARAM2 = "idColectivo";
+    private static final String ARG_PARAM3 = "idLinea";
 
     // TODO: Rename and change types of parameters
     private String recorrido;
     private String idColectivo;
+    private String idLinea;
 
     public UbicacionFragment() {
         // Required empty public constructor
@@ -93,14 +92,16 @@ public class UbicacionFragment extends Fragment {
      *
      * @param recorrido Parameter 1.
      * @param idColectivo Parameter 2.
+     * @param idLinea Parameter 3.
      * @return A new instance of fragment UbicacionFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UbicacionFragment newInstance(String recorrido, String idColectivo) {
+    public static UbicacionFragment newInstance(String recorrido, String idColectivo, String idLinea) {
         UbicacionFragment fragment = new UbicacionFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, recorrido);
         args.putString(ARG_PARAM2, idColectivo);
+        args.putString(ARG_PARAM3, idLinea);
         fragment.setArguments(args);
         return fragment;
     }
@@ -111,6 +112,7 @@ public class UbicacionFragment extends Fragment {
         if (getArguments() != null) {
             recorrido = getArguments().getString(ARG_PARAM1);
             idColectivo = getArguments().getString(ARG_PARAM2);
+            idLinea = getArguments().getString(ARG_PARAM3);
         }
     }
 
@@ -127,10 +129,10 @@ public class UbicacionFragment extends Fragment {
         osmApi = new OsmApi(map, getContext());
         colectivos = new Colectivos(map, getContext());
         // marker necesario para trackear
-        marker1 = colectivos.setUpMarker();
+        marker1 = colectivos.setUpMarker(idLinea);
         // Configuración de la base de datos remota
         osmApi.setUpMap(getContext());
-        insertarRecorrido(map, "sucucho");
+        insertarRecorrido(map);
         handler = new Handler();
         runnable = new Runnable() {
             @Override
@@ -189,7 +191,7 @@ public class UbicacionFragment extends Fragment {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void insertarRecorrido(MapView mapView, String recorrido){
+    private void insertarRecorrido(MapView mapView){
         InputStream inputStream = null;
         try{
 
@@ -245,20 +247,6 @@ public class UbicacionFragment extends Fragment {
         }
     }
 
-    private void addPoint(JSONArray coordinates) throws Exception {
-        double lon = coordinates.getDouble(0);
-        double lat = coordinates.getDouble(1);
-        GeoPoint point = new GeoPoint(lat, lon);
-        List<OverlayItem> items = new ArrayList<>();
-        OverlayItem overlayItem = new OverlayItem("Parada", "Tuki", point);
-        overlayItem.setMarker(getResources().getDrawable(R.drawable.parada_azul, null));
-        items.add(overlayItem);
-        ItemizedOverlayWithFocus<OverlayItem> overlay = new ItemizedOverlayWithFocus<>(getContext(), items, null);
-        overlay.setFocusItemsOnTap(true);
-
-        map.getOverlays().add(overlay);
-    }
-
     private void addLineString(JSONArray coordinates) throws Exception {
         List<GeoPoint> points = new ArrayList<>();
         for (int i = 0; i < coordinates.length(); i++) {
@@ -267,8 +255,11 @@ public class UbicacionFragment extends Fragment {
         }
         Polyline line = new Polyline();
         line.setPoints(points);
+        line.setColor(Color.RED);
+        line.setWidth(4);
         map.getOverlays().add(line);
     }
+
 
     private void addPolygon(JSONArray coordinates) throws Exception {
         List<GeoPoint> points = new ArrayList<>();
@@ -278,12 +269,53 @@ public class UbicacionFragment extends Fragment {
             points.add(new GeoPoint(coord.getDouble(1), coord.getDouble(0)));
         }
         Polygon polygon = new Polygon();
-        //polygon.setStrokeColor(Color.RED);
+        polygon.setStrokeColor(Color.RED);
 
         polygon.setPoints(points);
 
         map.getOverlays().add(polygon);
     }
+
+    public void updateFragment(String recorrido, String idColectivo, String idLinea) {
+        this.recorrido = recorrido;
+        this.idColectivo = idColectivo;
+
+        if (map != null) {
+            map.getOverlays().clear();
+            insertarRecorrido(map);
+            handler.post(runnable);
+        }
+    }
+
+    private void addPoint(JSONArray coordinates) throws Exception {
+        double lon = coordinates.getDouble(0);
+        double lat = coordinates.getDouble(1);
+        GeoPoint point = new GeoPoint(lat, lon);
+        List<OverlayItem> items = new ArrayList<>();
+        OverlayItem overlayItem = new OverlayItem("Parada", "Tuki", point);
+
+        Bitmap bitmap = null;
+
+        if(idLinea.equals("1")){
+            // creo el icono del azul
+            bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ubicacion_azul);
+        }else if(idLinea.equals("2")) {
+            // creo el icono del amarillo
+            bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ubicacion_amarillo);
+        }
+        // lo redimensiono
+        Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 40,40, false);
+        Drawable drawable = new BitmapDrawable (getContext().getResources(), bitmapRedimensionado);
+
+        overlayItem.setMarker(drawable);
+
+        items.add(overlayItem);
+        ItemizedOverlayWithFocus<OverlayItem> overlay = new ItemizedOverlayWithFocus<>(getContext(), items, null);
+        overlay.setFocusItemsOnTap(true);
+
+        map.getOverlays().add(overlay);
+    }
+
 
     @Override
     public void onResume() {

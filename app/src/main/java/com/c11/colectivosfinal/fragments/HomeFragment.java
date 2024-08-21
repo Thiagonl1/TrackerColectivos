@@ -77,16 +77,16 @@ public class HomeFragment extends Fragment {
         });
         button_colectivo2.setOnClickListener(v -> {
             queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2", lineaColectivos);
-            onAttach(getContext());
         }
         );
 
     }
 
-    public Bundle creaBundle (String idColectivo, String recorrido){
+    public Bundle creaBundle (String idColectivo, String recorrido, String idLinea){
         Bundle datos = new Bundle();
         datos.putString("idColectivo", idColectivo);
         datos.putString("recorrido", recorrido);
+        datos.putString("idLinea", idLinea);
 
         return datos;
     }
@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject jsonObject = response.getJSONObject(i);
 
-                            int idLinea = jsonObject.getInt("idLinea");
+                            String idLinea = jsonObject.getString("idLinea");
                             int idColectivo = jsonObject.getInt("idColectivo");
                             String recorrido = jsonObject.getString("recorrido");
 
@@ -111,14 +111,14 @@ public class HomeFragment extends Fragment {
 
                         if (!lineaColectivos.isEmpty()) {
                             Toast.makeText(getContext(),
-                                    "ID Colectivo: " + lineaColectivos.get(0).getRecorrido(),
+                                    "ID Linea: " + lineaColectivos.get(0).getIdLinea(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getContext(),
                                     "No se encontraron colectivos.",
                                     Toast.LENGTH_SHORT).show();
                         }
-                        Bundle bundle = creaBundle("1",  lineaColectivos.get(0).getRecorrido());
+                        Bundle bundle = creaBundle(String.valueOf(lineaColectivos.get(0).getIdColectivo()),  lineaColectivos.get(0).getRecorrido(), lineaColectivos.get(0).getIdLinea());
                         switchFragment(bundle);
 
                     } catch (JSONException e) {
@@ -150,14 +150,34 @@ public class HomeFragment extends Fragment {
 
     public void switchFragment(Bundle bundle){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        String tag = UbicacionFragment.class.getSimpleName();
+        UbicacionFragment fragmentCambio = (UbicacionFragment) fragmentManager.findFragmentByTag(tag);
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        Fragment fragmentCambio = UbicacionFragment.getInstance();
 
-        fragmentTransaction.replace(R.id.frame_layout, fragmentCambio);
+
+        if (fragmentCambio == null) {
+            String recorrido = bundle.getString("recorrido");
+            String idColectivo = bundle.getString("idColectivo");
+            String idLinea = bundle.getString("idLinea");
+
+            fragmentCambio = (UbicacionFragment) UbicacionFragment.newInstance(recorrido, idColectivo, idLinea);
+            fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
+            fragmentTransaction.addToBackStack(null);
+        } else {
+            // Update the existing fragment with the new data
+            fragmentCambio.updateFragment(
+                    bundle.getString("recorrido"),
+                    bundle.getString("idColectivo"),
+                    bundle.getString("idLinea")
+            );
+        }
+        fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
         fragmentTransaction.addToBackStack(null);
-        fragmentCambio.setArguments(bundle);
+
         fragmentTransaction.commit();
     }
+
 
 }

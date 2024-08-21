@@ -56,7 +56,7 @@ public class SelectorActivity extends AppCompatActivity {
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject jsonObject = response.getJSONObject(i);
 
-                            int idLinea = jsonObject.getInt("idLinea");
+                            String idLinea = jsonObject.getString("idLinea");
                             int idColectivo = jsonObject.getInt("idColectivo");
                             String recorrido = jsonObject.getString("recorrido");
 

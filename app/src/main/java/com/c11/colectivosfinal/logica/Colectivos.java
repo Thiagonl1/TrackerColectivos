@@ -5,28 +5,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.widget.Toast;
 
 import com.c11.colectivosfinal.R;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.api.IMapController;
 
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Polyline;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
-import java.util.List;
 
 
 public class Colectivos{
 
-    private String nombre;
+
     public int idColectivo;
     public boolean enFuncion;
     public double latitud, longitud;
@@ -73,30 +64,37 @@ public class Colectivos{
         this.longitud = longitud;
     }
 
-    public Marker setUpMarker(){
+
+
+
+
+    public Marker setUpMarker(String idLinea){
         Marker marker = new Marker(map, context);
         GeoPoint geoPoint = new GeoPoint(latitud, longitud);
+        Bitmap bitmap = null;
         marker.setPosition(geoPoint);
 
-        // creo el icono
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bondi);
+        if(idLinea.equals("1")){
+            // creo el icono del azul
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_azul);
+        }else if(idLinea.equals("2")) {
+            // creo el icono del amarillo
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_amarillo);
+        }
+
         // lo redimensiono
         Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 100,100, false);
 
         Drawable drawable = new BitmapDrawable(context.getResources(), bitmapRedimensionado);
         marker.setIcon(drawable);
-
-        marker.setTitle("Persona a");
-        marker.setSnippet("Mda - Sc");
         return marker;
     }
 
     public void putMarkerInMap(Marker marker){
-        /*if (!map.getOverlays().contains(polyline)) {
-            map.getOverlays().add(polyline);
-        }*/
+
         map.getOverlays().add(marker);
         map.invalidate();
+
     }
 
     public void updateMarker(Marker marker) {
@@ -117,13 +115,5 @@ public class Colectivos{
 
         map.invalidate();
     }
-
-    /*public List<Colectivos> colectivos traerColectivos(){
-        traer todos los colectivos necesarios de una linea en especifico.
-        php
-
-        return colectivos;
-    }*/
-
 
 }

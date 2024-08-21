@@ -1,10 +1,11 @@
 package com.c11.colectivosfinal.logica;
 
 public class LineaColectivos {
-    int idLinea, idColectivo, idLineaColectivo;
+    int idColectivo, idLineaColectivo;
+    String idLinea;
     String recorrido;
 
-    public LineaColectivos (int idLinea, int idColectivo, String recorrido){
+    public LineaColectivos (String idLinea, int idColectivo, String recorrido){
         this.idLinea = idLinea;
         this.idColectivo = idColectivo;
         this.recorrido = recorrido;
@@ -18,11 +19,11 @@ public class LineaColectivos {
         this.recorrido = recorrido;
     }
 
-    public int getIdLinea() {
+    public String getIdLinea() {
         return idLinea;
     }
 
-    public void setIdLinea(int idLinea) {
+    public void setIdLinea(String idLinea) {
         this.idLinea = idLinea;
     }
 

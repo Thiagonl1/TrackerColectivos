@@ -61,7 +61,7 @@ public class DesplegarMapa extends AppCompatActivity {
 
         // marker necesario para trackear
 
-        marker1 = colectivos.setUpMarker();
+        //marker1 = colectivos.setUpMarker();
         // Configuración de la base de datos remota
         osmApi.setUpMap(this);
     }
