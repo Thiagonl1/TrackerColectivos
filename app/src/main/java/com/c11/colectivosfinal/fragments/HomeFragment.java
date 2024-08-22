@@ -1,8 +1,6 @@
 package com.c11.colectivosfinal.fragments;
 
 
-import static androidx.core.app.ActivityCompat.invalidateOptionsMenu;
-
 import android.os.Bundle;
 
 
@@ -15,7 +13,9 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,18 +23,25 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.c11.colectivosfinal.R;
-import com.c11.colectivosfinal.activities.MuestraMenu;
 import com.c11.colectivosfinal.logica.LineaColectivos;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private static HomeFragment instance;
+    private List<LineaColectivos> lineasColectivoBundle = new ArrayList<LineaColectivos>();
+    private  final List<String> lineasColectivo = new ArrayList<>(Arrays.asList("Interurbano", "Urbano"));
+    private final List<String> recorridoColectivoUrb = new ArrayList<>(Arrays.asList("San Clemente: Terminal - Puerto", "San Clemente: Puerto - Terminal"));
+    private final List<String> recorridoColectivoIntUrb = new ArrayList<>(Arrays.asList("San Clemente - Mar de Ajo", "Mar de Ajo - San Clemente"));
+
+
+
 
     public static HomeFragment getInstance(){
         if(instance == null){
@@ -62,25 +69,63 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         if (getActivity() != null) {
             getActivity().invalidateOptionsMenu();
         }
 
-        List<LineaColectivos> lineaColectivos = new ArrayList<>();
-        Button button_colectivo1 = view.findViewById(R.id.btn_colectivoInter);
-        Button button_colectivo2 = view.findViewById(R.id.btn_colectivoUrb);
+        ArrayAdapter<String> adapterLineas = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, lineasColectivo);
+        ListView listView = view.findViewById(R.id.lista);
+        listView.setAdapter(adapterLineas);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        button_colectivo1.setOnClickListener(v -> {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                String selectedItem = (String) adapterView.getItemAtPosition(position);
+
+                switch(position){
+                    case 0:
+                        if(adapterLineas.getItem(0).equals("Interurbano")){
+                            adapterLineas.clear();
+                            adapterLineas.addAll(recorridoColectivoIntUrb);
+                        }else{
+                            // Mandar el idColectivo correspondiente y cambiar de fragment
+                            if(adapterLineas.getItem(0).equals("San Clemente: Terminal - Puerto")){
+                                queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=1", lineasColectivoBundle);
+
+                            }else{
+
+                            }
+                        }
+                        break;
+                    case 1:
+                        if(adapterLineas.getItem(1).equals("Urbano")){
+                            adapterLineas.clear();
+                            adapterLineas.addAll(recorridoColectivoUrb);
+                        }else{
+                            if(adapterLineas.getItem(1).equals("San Clemente: Puerto - Terminal")){
+                                queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2", lineasColectivoBundle);
+
+                            }else{
+
+                            }
+                            // Mandar el idColectivo correspondiente y cambiar de fragment
+                        }
+                }
+                adapterLineas.notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    /*button_colectivo1.setOnClickListener(v -> {
             queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=1", lineaColectivos);
         });
         button_colectivo2.setOnClickListener(v -> {
             queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2", lineaColectivos);
         }
-        );
+        );*/
 
-    }
 
     public Bundle creaBundle (String idColectivo, String recorrido, String idLinea){
         Bundle datos = new Bundle();
@@ -90,6 +135,9 @@ public class HomeFragment extends Fragment {
 
         return datos;
     }
+
+
+
 
     public void queryLineaColectivo(String URL, List<LineaColectivos> lineaColectivos) {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(

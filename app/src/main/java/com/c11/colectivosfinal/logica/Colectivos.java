@@ -78,6 +78,8 @@ public class Colectivos{
 
         if (idLinea == null) {
             Log.e("Colectivos", "idLinea is null");
+            geoPoint = new GeoPoint(0,0);
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.null_marker);
         } else if (idLinea.equals("1")) {
             // Set the blue icon
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_azul);
