@@ -92,6 +92,14 @@ public class Colectivos{
         Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 100,100, false);
         Drawable drawable = new BitmapDrawable(context.getResources(), bitmapRedimensionado);
         marker.setIcon(drawable);
+        marker.setTitle(null);
+        marker.setSnippet(null);
+        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                return true;
+            }
+        });
         return marker;
     }
 
@@ -99,7 +107,6 @@ public class Colectivos{
 
         map.getOverlays().add(marker);
         map.invalidate();
-
     }
 
     public void updateMarker(Marker marker) {

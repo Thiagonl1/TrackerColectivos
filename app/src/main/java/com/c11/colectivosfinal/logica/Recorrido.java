@@ -131,10 +131,10 @@ public class Recorrido {
 
         if(idLinea.equals("1")){
             // creo el icono del azul
-            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_azul);
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.parada_azul);
         }else if(idLinea.equals("2")) {
             // creo el icono del amarillo
-            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_amarillo);
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.parada_amarillo);
         }
         // lo redimensiono
         Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 40,40, false);

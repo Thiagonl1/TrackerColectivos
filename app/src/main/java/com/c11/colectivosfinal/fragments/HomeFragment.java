@@ -1,6 +1,7 @@
 package com.c11.colectivosfinal.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 
@@ -13,7 +14,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -31,24 +31,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
-    private static HomeFragment instance;
-    private List<LineaColectivos> lineasColectivoBundle = new ArrayList<LineaColectivos>();
+    private final List<LineaColectivos> lineasColectivoBundle = new ArrayList<>();
     private  final List<String> lineasColectivo = new ArrayList<>(Arrays.asList("Interurbano", "Urbano"));
     private final List<String> recorridoColectivoUrb = new ArrayList<>(Arrays.asList("San Clemente: Terminal - Puerto", "San Clemente: Puerto - Terminal"));
     private final List<String> recorridoColectivoIntUrb = new ArrayList<>(Arrays.asList("San Clemente - Mar de Ajo", "Mar de Ajo - San Clemente"));
 
-
-
-
-    public static HomeFragment getInstance(){
-        if(instance == null){
-            instance = new HomeFragment();
-        }
-        return instance;
-    }
 
     public HomeFragment() {
         // Required empty public constructor
@@ -73,47 +64,42 @@ public class HomeFragment extends Fragment {
             getActivity().invalidateOptionsMenu();
         }
 
-        ArrayAdapter<String> adapterLineas = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, lineasColectivo);
+        ArrayAdapter<String> adapterLineas = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, lineasColectivo);
         ListView listView = view.findViewById(R.id.lista);
         listView.setAdapter(adapterLineas);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener((adapterView, view1, position, id) -> {
 
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                String selectedItem = (String) adapterView.getItemAtPosition(position);
+            switch(position){
+                case 0:
+                    if(Objects.requireNonNull(adapterLineas.getItem(0)).equals("Interurbano")){
+                        adapterLineas.clear();
+                        adapterLineas.addAll(recorridoColectivoIntUrb);
+                    }else{
+                        // Mandar el idColectivo correspondiente y cambiar de fragment
+                        if(Objects.requireNonNull(adapterLineas.getItem(0)).equals("San Clemente: Terminal - Puerto")){
+                            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=1", lineasColectivoBundle);
 
-                switch(position){
-                    case 0:
-                        if(adapterLineas.getItem(0).equals("Interurbano")){
-                            adapterLineas.clear();
-                            adapterLineas.addAll(recorridoColectivoIntUrb);
                         }else{
-                            // Mandar el idColectivo correspondiente y cambiar de fragment
-                            if(adapterLineas.getItem(0).equals("San Clemente: Terminal - Puerto")){
-                                queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=1", lineasColectivoBundle);
 
-                            }else{
-
-                            }
                         }
-                        break;
-                    case 1:
-                        if(adapterLineas.getItem(1).equals("Urbano")){
-                            adapterLineas.clear();
-                            adapterLineas.addAll(recorridoColectivoUrb);
+                    }
+                    break;
+                case 1:
+                    if(Objects.requireNonNull(adapterLineas.getItem(1)).equals("Urbano")){
+                        adapterLineas.clear();
+                        adapterLineas.addAll(recorridoColectivoUrb);
+                    }else{
+                        if(Objects.requireNonNull(adapterLineas.getItem(1)).equals("San Clemente: Puerto - Terminal")){
+                            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2", lineasColectivoBundle);
+
                         }else{
-                            if(adapterLineas.getItem(1).equals("San Clemente: Puerto - Terminal")){
-                                queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2", lineasColectivoBundle);
-
-                            }else{
-
-                            }
-                            // Mandar el idColectivo correspondiente y cambiar de fragment
+                            // saracatunga
                         }
-                }
-                adapterLineas.notifyDataSetChanged();
+                        // Mandar el idColectivo correspondiente y cambiar de fragment
+                    }
             }
+            adapterLineas.notifyDataSetChanged();
         });
 
     }
@@ -192,14 +178,14 @@ public class HomeFragment extends Fragment {
                 }
         );
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        @SuppressLint("UseRequireInsteadOfGet") RequestQueue requestQueue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
         requestQueue.add(jsonArrayRequest);
     }
 
     public void switchFragment(Bundle bundle){
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        @SuppressLint("UseRequireInsteadOfGet") FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         String tag = UbicacionFragment.class.getSimpleName();
-        UbicacionFragment fragmentCambio = (UbicacionFragment) fragmentManager.findFragmentByTag(tag);
+        UbicacionFragment fragmentCambio;
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -207,7 +193,7 @@ public class HomeFragment extends Fragment {
         String idColectivo = bundle.getString("idColectivo");
         String idLinea = bundle.getString("idLinea");
 
-        fragmentCambio = (UbicacionFragment) UbicacionFragment.newInstance(recorrido, idColectivo, idLinea);
+        fragmentCambio = UbicacionFragment.newInstance(recorrido, idColectivo, idLinea);
         fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
