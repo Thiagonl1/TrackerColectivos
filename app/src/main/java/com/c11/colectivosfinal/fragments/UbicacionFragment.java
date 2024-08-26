@@ -134,17 +134,18 @@ public class UbicacionFragment extends Fragment {
         osmApi.setUpMap(getContext());
         recorridoClass.insertarRecorrido();
         handler = new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run(){
+        if(idColectivo!=null){
+            runnable = new Runnable() {
+                @Override
+                public void run(){
 
-                buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idColectivo= "+idColectivo);
-                colectivos.putMarkerInMap(marker1);
-                colectivos.updateMarker(marker1);
-                handler.postDelayed(this, INTERVALO_ACTUALIZACION);
-            }
-        };
-
+                    buscarPersona("https://dadaproductora.com.ar/web_services/buscar_ubicacion.php?idColectivo= "+idColectivo);
+                    colectivos.putMarkerInMap(marker1);
+                    colectivos.updateMarker(marker1);
+                    handler.postDelayed(this, INTERVALO_ACTUALIZACION);
+                }
+            };
+        }
         return view;
     }
 

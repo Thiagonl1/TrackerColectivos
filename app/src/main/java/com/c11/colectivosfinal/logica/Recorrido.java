@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
@@ -98,8 +100,11 @@ public class Recorrido {
         }
         Polyline line = new Polyline();
         line.setPoints(points);
-        line.setColor(Color.RED);
-        line.setWidth(4);
+
+        line.setColor(Color.parseColor("#3283F7"));
+        line.getOutlinePaint().setStrokeCap(Paint.Cap.ROUND);
+
+
         map.getOverlays().add(line);
     }
 

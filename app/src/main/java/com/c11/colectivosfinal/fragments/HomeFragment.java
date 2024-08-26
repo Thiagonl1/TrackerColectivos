@@ -78,10 +78,11 @@ public class HomeFragment extends Fragment {
                     }else{
                         // Mandar el idColectivo correspondiente y cambiar de fragment
                         if(Objects.requireNonNull(adapterLineas.getItem(0)).equals("San Clemente: Terminal - Puerto")){
-                            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=1", lineasColectivoBundle);
+                            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idColectivo=2", lineasColectivoBundle);
 
                         }else{
-
+                            // significa que es SC - MDA
+                            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idColectivo=3", lineasColectivoBundle);
                         }
                     }
                     break;
@@ -91,10 +92,11 @@ public class HomeFragment extends Fragment {
                         adapterLineas.addAll(recorridoColectivoUrb);
                     }else{
                         if(Objects.requireNonNull(adapterLineas.getItem(1)).equals("San Clemente: Puerto - Terminal")){
-                            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2", lineasColectivoBundle);
+                            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idColectivo=1", lineasColectivoBundle);
 
                         }else{
-                            // saracatunga
+                            // significa que es el interurbano MDA - SAN CLEMENTE
+                            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idColectivo=4", lineasColectivoBundle);
                         }
                         // Mandar el idColectivo correspondiente y cambiar de fragment
                     }
@@ -103,15 +105,6 @@ public class HomeFragment extends Fragment {
         });
 
     }
-
-    /*button_colectivo1.setOnClickListener(v -> {
-            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=1", lineaColectivos);
-        });
-        button_colectivo2.setOnClickListener(v -> {
-            queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=2", lineaColectivos);
-        }
-        );*/
-
 
     public Bundle creaBundle (String idColectivo, String recorrido, String idLinea){
         Bundle datos = new Bundle();
