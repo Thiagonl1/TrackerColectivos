@@ -12,6 +12,8 @@ import android.content.pm.PackageManager;
 
 
 import android.Manifest;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -37,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button btn_actualizar = findViewById(R.id.botonCambio);
 
         // gradle (module : app) buildFeatures{ } tenes que poner buildConfig = true..
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
@@ -49,7 +50,13 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, PERMISSION_REQUEST_CODE);
         }
-        btn_actualizar.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MuestraMenu.class)));
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Intent intent = new Intent(MainActivity.this, MuestraMenu.class);
+            startActivity(intent);
+            finish();
+        }, 3000);
+
+
     }
 
     @Override

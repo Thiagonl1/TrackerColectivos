@@ -138,7 +138,7 @@ public class HomeFragment extends Fragment {
 
                         if (!lineaColectivos.isEmpty()) {
                             Toast.makeText(getContext(),
-                                    "ID Linea: " + lineaColectivos.get(0).getIdLinea(),
+                                    "Se encontró un móvil activo ",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getContext(),
