@@ -45,24 +45,23 @@ public class OsmApi {
         if(lastKnownLocation != null){
             GeoPoint startPoint = new GeoPoint(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
             mapController.setCenter(startPoint);
-
-            MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
-
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_location);
-            Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 60,80, false);
-
-
-            myLocationOverlay.setPersonIcon(bitmapRedimensionado);
-            myLocationOverlay.setDirectionIcon(bitmapRedimensionado);
-
-            mapView.getOverlays().clear();
-
-            mapView.getOverlays().add(myLocationOverlay);
-
-            mapView.invalidate();
         }else{
-            Toast.makeText(context, "No se pudo encontrar la ubicacion", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "No se pudo encontrar la ubicación previa en el gps.", Toast.LENGTH_SHORT).show();
         }
+        MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_location);
+        Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 60,80, false);
+
+
+        myLocationOverlay.setPersonIcon(bitmapRedimensionado);
+        myLocationOverlay.setDirectionIcon(bitmapRedimensionado);
+
+        mapView.getOverlays().clear();
+
+        mapView.getOverlays().add(myLocationOverlay);
+
+        mapView.invalidate();
+
     }
 
     private Location getLastKnownLocation(Context context) {
