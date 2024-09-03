@@ -81,10 +81,10 @@ public class Colectivos{
             geoPoint = new GeoPoint(0,0);
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.null_marker);
         } else if (idLinea.equals("1")) {
-            // Set the blue icon
+            // colectivo azul
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_azul);
         } else if (idLinea.equals("2")) {
-            // Set the yellow icon
+            // colectivo amarillo
             bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ubicacion_amarillo);
         }
 
