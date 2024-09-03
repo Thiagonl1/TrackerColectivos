@@ -50,7 +50,7 @@ public class OsmApi {
         }
         MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context), mapView);
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_location);
-        Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 60,80, false);
+        Bitmap bitmapRedimensionado = Bitmap.createScaledBitmap(bitmap, 100,100, false);
 
 
         myLocationOverlay.setPersonIcon(bitmapRedimensionado);
