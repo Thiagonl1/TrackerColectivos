@@ -55,7 +55,7 @@ public class MuestraMenu extends AppCompatActivity {
     private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout, fragment);
+        fragmentTransaction.replace(R.id.frame_layouta, fragment);
         fragmentTransaction.commit();
         fragmentManager.executePendingTransactions();
         invalidateMenu();
@@ -70,7 +70,7 @@ public class MuestraMenu extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layouta);
 
         if (currentFragment instanceof HomeFragment) {
             menu.findItem(R.id.item_home).setVisible(true);

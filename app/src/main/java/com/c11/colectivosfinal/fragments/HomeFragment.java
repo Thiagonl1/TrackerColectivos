@@ -187,9 +187,9 @@ public class HomeFragment extends Fragment {
         String idLinea = bundle.getString("idLinea");
 
         fragmentCambio = UbicacionFragment.newInstance(recorrido, idColectivo, idLinea);
-        fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
+        fragmentTransaction.replace(R.id.frame_layouta, fragmentCambio, tag);
         fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.replace(R.id.frame_layout, fragmentCambio, tag);
+        fragmentTransaction.replace(R.id.frame_layouta, fragmentCambio, tag);
         fragmentTransaction.addToBackStack(null);
 
         fragmentTransaction.commit();

@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
 }
-
 android {
     namespace = "com.c11.colectivosfinal"
     compileSdk = 34
@@ -34,6 +33,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures{
+        viewBinding = true
+    }
+
+
 }
 
 dependencies {
@@ -50,4 +54,7 @@ dependencies {
     implementation ("com.android.volley:volley:1.2.1")
     implementation ("com.google.code.gson:gson:2.8.9")
     implementation ("org.json:json:20210307")
+    implementation ("com.github.mhiew:android-pdf-viewer:3.2.0-beta.1")
+
+
 }

@@ -4,15 +4,16 @@
 
     <item
         android:id="@+id/item_home"
-        android:icon="@drawable/baseline_map_24"
+        android:icon="@drawable/baseline_directions_bus_24"
+
         android:title="Lineas" />
     <item
         android:id="@+id/item_ubicacion"
         android:title="Ubicacion"
-        android:icon="@drawable/baseline_directions_bus_24"/>
+        android:icon="@drawable/ubicacion"/>
     <item
         android:id="@+id/item_ajustes"
-        android:title="Ajustes"
-        android:icon="@drawable/settings"/>
+        android:icon="@drawable/lista"
+        android:title="Horarios" />
 
 </menu>
