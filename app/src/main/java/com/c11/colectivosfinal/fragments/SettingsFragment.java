@@ -20,9 +20,13 @@ import com.c11.colectivosfinal.R;
 import com.c11.colectivosfinal.logica.LineaColectivos;
 import com.github.barteksc.pdfviewer.PDFView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -44,6 +48,7 @@ public class SettingsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -81,7 +86,8 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
+        Calendar calendar = Calendar.getInstance();
+        String currentDay = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US);
 
         ArrayAdapter<String> adapterLineas = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, lineasColectivo);
         ListView listView = view.findViewById(R.id.lista);
@@ -95,16 +101,21 @@ public class SettingsFragment extends Fragment {
                         adapterLineas.clear();
                         adapterLineas.addAll(recorridoColectivoIntUrb);
                     }else{
-                        // Mandar el idColectivo correspondiente y cambiar de fragment
+                        // significa que es SC - MDA
                         if(Objects.requireNonNull(adapterLineas.getItem(0)).equals("San Clemente: Terminal - Puerto")){
                             Bundle bundle = creaBundle("SanClementepdf.pdf");
                             switchFragment(bundle);
 
                         }else{
-                            // significa que es SC - MDA
-                            Bundle bundle = creaBundle("semanaMDASC.pdf");
-                            switchFragment(bundle);
-
+                            if(currentDay.equalsIgnoreCase("Saturday") || currentDay.equalsIgnoreCase("Sunday")){
+                                //PDF para horarios de fines de semana
+                                Bundle bundle = creaBundle("finesDeSemanaMDASC.pdf");
+                                switchFragment(bundle);
+                            }else{
+                                //PDF para dias de semana
+                                Bundle bundle = creaBundle("semanaMDASC.pdf");
+                                switchFragment(bundle);
+                            }
 
                         }
                     }
@@ -119,10 +130,17 @@ public class SettingsFragment extends Fragment {
                             switchFragment(bundle);
 
                         }else{
+                            // San Clemente - MDA
+                            if(currentDay.equalsIgnoreCase("Saturday") || currentDay.equalsIgnoreCase("Sunday")){
+                                //PDF para horarios de fines de semana
+                                Bundle bundle = creaBundle("finesDeSemanaMDASC.pdf");
+                                switchFragment(bundle);
+                            }else{
+                                //PDF para dias de semana
+                                Bundle bundle = creaBundle("semanaMDASC.pdf");
+                                switchFragment(bundle);
+                            }
                             // significa que es el interurbano MDA - SAN CLEMENTE
-                            Bundle bundle = creaBundle("semanaMDASC.pdf");
-                            switchFragment(bundle);
-
                         }
                         // Mandar el idColectivo correspondiente y cambiar de fragment
                     }
