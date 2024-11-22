@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -55,6 +54,5 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.8.9")
     implementation ("org.json:json:20210307")
     implementation ("com.github.mhiew:android-pdf-viewer:3.2.0-beta.1")
-
-
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
 }

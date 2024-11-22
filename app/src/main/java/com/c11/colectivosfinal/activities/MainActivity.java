@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.c11.colectivosfinal.BuildConfig;
+import com.c11.colectivosfinal.fragments.SettingsFragment;
 
 
 import org.osmdroid.config.Configuration;
@@ -51,7 +52,10 @@ public class MainActivity extends AppCompatActivity {
             }, PERMISSION_REQUEST_CODE);
         }
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent intent = new Intent(MainActivity.this, MuestraMenu.class);
+            /*Intent intent = new Intent(MainActivity.this, MuestraMenu.class);
+            startActivity(intent);
+            finish();*/
+            Intent intent = new Intent(MainActivity.this, SelectorActivity.class);
             startActivity(intent);
             finish();
         }, 3000);

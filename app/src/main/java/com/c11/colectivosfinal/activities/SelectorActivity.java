@@ -33,14 +33,8 @@ public class SelectorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector_activity);
-        Button button_colectivo1 = findViewById(R.id.btn_colectivo1);
-        Button button_colectivo2 = findViewById(R.id.btn_colectivo2);
-        button_colectivo1 = findViewById(R.id.btn_colectivo1);
-        button_colectivo2 = findViewById(R.id.btn_colectivo2);
 
         /* Buscamos todos los  colectivos interurbanos */
-        button_colectivo1.setOnClickListener(view -> queryLineaColectivo("https://dadaproductora.com.ar/web_services/buscar_idLinea.php?idLinea=1", lineaColectivos));
-
     }
 
 
