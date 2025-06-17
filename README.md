@@ -1,8 +1,7 @@
-# 🚌 TrackerColectivos
+# TrackerColectivos
 
 **Aplicación Android** que permite visualizar la ubicación en tiempo real de un colectivo en un mapa utilizando coordenadas enviadas desde otra app hacia un servidor.
-
-## 📱 Funcionalidades
+Funcionalidades
 
 - Visualización en mapa con OpenStreetMap
 - Envío y recepción de coordenadas desde base de datos remota
@@ -11,7 +10,7 @@
 - Interfaz sencilla con opción de seguir el recorrido
   
 
-## 🛠 Tecnologías utilizadas
+Tecnologías utilizadas
 
 - Java (Android)
 - OpenStreetMap (OSMDroid)
@@ -20,7 +19,7 @@
 - Volley (para peticiones HTTP)
 - Android Studio
 
-## 🧪 Estructura del Proyecto
+Estructura del Proyecto
 
 - `MainActivity.java`: actividad principal, gestiona navegación
 - `HomeFragment.java`: muestra botones e inicia seguimiento
@@ -29,7 +28,7 @@
 - `Conexion.php`: archivo PHP que recibe/enlaza las coordenadas
 
 
-## ▶️ Cómo correr el proyecto
+## Cómo correr el proyecto
 
 1. Clonar el repositorio:
    ```bash
